@@ -1,6 +1,4 @@
 import classes from "./App.module.css";
-import { mockDevices } from "./assets/devices";
-
 
 function App() {
   return (
