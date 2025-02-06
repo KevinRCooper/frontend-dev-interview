@@ -1,4 +1,34 @@
-export type RhombusDevice = any;
+export type DeviceType = "CAMERA" | "AUDIO_GATEWAY" | "ENVIRONMENTAL_SENSOR";
+export type RhombusDeviceBase = {
+  name: string;
+  serialNumber: string;
+  id: string;
+  deviceType: DeviceType;
+}
+
+type Disconnected = boolean;
+
+export type Camera = RhombusDeviceBase & {
+  deviceType: "CAMERA";
+  maxBitrate: number;
+  hardwareType: `CAMERA_${"R360" | "R500" | "R200"}`;
+  disconnected?: Disconnected;
+};
+
+export type AudioGateway = RhombusDeviceBase & {
+  deviceType: "AUDIO_GATEWAY";
+  microphoneEnabled: boolean;
+  speakerEnabled: boolean;
+  disconnected?: Disconnected;
+};
+
+export type EnvironmentalSensor = RhombusDeviceBase & {
+  deviceType: "ENVIRONMENTAL_SENSOR";
+  temperatureCelsius: number;
+  humidityPermyriad: number;
+};
+
+export type RhombusDevice = Camera | AudioGateway | EnvironmentalSensor;
 
 // Dummy data
 export const mockDevices: RhombusDevice[] = [
@@ -53,3 +83,36 @@ export const mockDevices: RhombusDevice[] = [
     humidityPermyriad: 1000,
   },
 ]
+
+export const getDeviceType = (data: RhombusDeviceBase): RhombusDevice => {
+  switch (data.deviceType) {
+    case "CAMERA":
+      return {
+        ...data,
+        deviceType: "CAMERA",
+        maxBitrate: 0,
+        hardwareType: "CAMERA_R360",
+      };
+    case "AUDIO_GATEWAY":
+      return {
+        ...data,
+        deviceType: "AUDIO_GATEWAY",
+        microphoneEnabled: false,
+        speakerEnabled: false,
+      };
+    case "ENVIRONMENTAL_SENSOR":
+      return {
+        ...data,
+        deviceType: "ENVIRONMENTAL_SENSOR",
+        temperatureCelsius: 0,
+        humidityPermyriad: 0,
+      };
+    default: return data.deviceType satisfies never;
+  }
+}
+
+export const deviceTypeLabels: Record<string, string> = {
+  CAMERA: "Cameras",
+  AUDIO_GATEWAY: "Audio Gateways",
+  ENVIRONMENTAL_SENSOR: "Environmental Sensors",
+};

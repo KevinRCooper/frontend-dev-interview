@@ -1,3 +1,5 @@
+import { DeviceType } from "./devices";
+
 export default function registerDevice(device: RegisterDevice) {
   return new Promise<{ deviceId: string }>((resolve, reject) => {
     const apiCallFailed = getMockApiCallFailed();
@@ -22,7 +24,7 @@ function generateDeviceId() {
     .join("");
 }
 
-type RegisterDevice = { name: string; serialNumber: string; deviceType: string; };
+export type RegisterDevice = { name: string; serialNumber: string; deviceType: DeviceType; };
 
 function validateDevice(device: RegisterDevice) {
   return !!device.name && !!device.serialNumber && !!device.deviceType;
